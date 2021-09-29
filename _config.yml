@@ -59,7 +59,7 @@ plugins:
 author:
   name   : "Allen Shao"
   avatar : "/assets/images/yjsp.jpeg"
-  bio    : "Make a big news."
+  bio    : "Make big news."
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
