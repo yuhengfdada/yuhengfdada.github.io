@@ -34,7 +34,6 @@ timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 include:
   - _pages
 
-google_analytics: UA-134456087-1
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -56,7 +55,6 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-include-cache
-  - jekyll-analytics
 
 author:
   name   : "Allen Shao"
@@ -106,6 +104,8 @@ tag_archive:
   type: liquid
   path: /tags/
 
-jekyll_analytics:
-  GoogleAnalytics:          # Add, if you want to track with Google Analytics
-    id: UA-134456087-1          # Required - replace with your tracking id
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-5GL2SQYKXX"
+    anonymize_ip: false # default
