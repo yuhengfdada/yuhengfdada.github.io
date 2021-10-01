@@ -7,7 +7,7 @@ tags:
   - Array
 ---
 
-数组第三课：滑动窗口。
+数组第三课，滑动窗口。
 
 # [209. 长度最小的子数组](https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
 
