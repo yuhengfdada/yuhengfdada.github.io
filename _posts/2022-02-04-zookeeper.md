@@ -39,7 +39,7 @@ In this paper, we describe ZooKeeper, a service for **coordinating processes of 
 
 它只保证下面两个性质：
 
-<img src="/Users/apple/yuhengfdada.github.io/assets/zoo/guarantees.png" alt="mr1" height="150"/>
+<img src="/assets/zoo/guarantees.png" alt="mr1" height="150"/>
 
 简单解释：
 
@@ -58,7 +58,7 @@ watch: 调API的时候如果设置了watch flag，那么当相应文件（第一
 
 API:
 
-<img src="/Users/apple/yuhengfdada.github.io/assets/zoo/API.png" alt="mr1" height="250"/>
+<img src="/assets/zoo/API.png" alt="mr1" height="250"/>
 
 # 所以为什么zookeeper可以作为coordination service？
 
