@@ -52,7 +52,7 @@ In contrast, ZK不能guarantee自己能及时read到其他人update的信息。�
 
 # zookeeper结构 / API
 
-树形文件结构（why？因为某些操作，比如check group membership，可以利用文件的阶级性）
+树形文件结构（why？因为某些操作，比如后面提到的check group membership，可以利用文件的阶级性）
 
 watch: 调API的时候如果设置了watch flag，那么当相应文件（第一次）发生变化时就会收到通知。
 
@@ -64,7 +64,33 @@ API:
 
 利用”文件“储存配置信息。ZK的API设计非常concurrency-oriented，所以比较好coordinate。
 
-## 例1：Counter（test-and-modify）
+# 配置同步
+
+要获取某文件`pathname`的最新配置，只要getData(pathname)并设置watch = true。这样后面也能收到更新。
+
+# Check Group Membership
+
+建立一个空节点parent，代表整个group。
+
+每当一个进程/服务器想加入该group，就在group下面创建一个孩子。你可以自由命名，或者让zookeeper帮你命名（加一个sequential flag就可以了）。
+
+要获取group信息，只要列出parent节点的孩子就可以了。
+
+## Leader Switch
+
+// paper 2.3
+
+利用一个”ready“ file。
+
+master刚被选上的时候，delete "ready" file，然后开始配置。配置完毕后create "ready" file。followers只有看到"ready" file之后才能开始配置。
+
+根据之前的FIFO ordering guarantee，看到"ready" file的时候就说明master已经配置完毕了。
+
+**exception: follower checked "ready" file before master deletion**
+
+可以通过加watch来避免这种情况。具体可以看 http://nil.csail.mit.edu/6.824/2021/notes/l-zookeeper.txt
+
+## Counter（test-and-modify）
 
 // paper 2.3
 
@@ -82,7 +108,7 @@ while (true) {
 }
 ```
 
-## 例2：Lock（利用文件存在性）
+## Lock（利用文件存在性）
 
 // paper 2.4
 
@@ -97,19 +123,11 @@ release(): (voluntarily or session timeout)
   delete("lf")
 ```
 
-## 例3：Leader Switch
+# Barrier
 
-// paper 2.3
+Barrier的语义是**所有进程reach barrier之后才能继续执行**。
 
-利用一个”ready“ file。
+ZK使用一个znode来做barrier。到达barrier的进程会创建一个znode的子节点，并设置watch。
 
-master刚被选上的时候，delete "ready" file，然后开始配置。配置完毕后create "ready" file。followers只有看到"ready" file之后才能开始配置。
-
-根据之前的FIFO ordering guarantee，看到"ready" file的时候就说明master已经配置完毕了。
-
-**exception: follower checked "ready" file before master deletion**
-
-可以通过加watch来避免这种情况。具体可以看 http://nil.csail.mit.edu/6.824/2021/notes/l-zookeeper.txt
-
-
+当子节点数量达到threshold时就启动所有进程。为了防止”check子节点数量时有进程已经结束“的情况，最后一个到达barrier的进程会创建一个特殊的节点。其他进程只要看到特殊节点就可以启动了。
 
