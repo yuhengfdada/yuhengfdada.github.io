@@ -243,7 +243,7 @@ sort一下return list，把第11~90名liquidate（平仓）了。
 
 # 结果
 
-![res](/Users/apple/yuhengfdada.github.io/assets/qc/res.png)
+![res](/assets/qc/res.png)
 
 # Room for Improvement
 
