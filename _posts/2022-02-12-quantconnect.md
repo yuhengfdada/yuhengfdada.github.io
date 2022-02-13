@@ -158,6 +158,8 @@ def CoarseSelectionFunction(self, coarse):
 
 价格数据会根据你设定的时间频率以Slice的形式feed进来，然后自动触发OnData()事件（或者说调用该函数）。所以可以说是event-driven？
 
+PS. 但是后面都没有直接用到data。所以似乎其他属性也会随着时间自动变化，比如Securities里面的price（下面有出现）。
+
 # Warm-up
 
 先看一下比较简单的warm-up。
@@ -190,8 +192,61 @@ if not self._ifWarmUp:
 
 这段代码真的让我觉得python狗都不用，特别是doc也写得很烂的情况下。比如我完全搜不到UniverseManager的成员。
 
+## 初始化（lastday == -1）
+
 猜测一下，UniverseManager是一个map，它的Value是一堆universe里面的member。member就有一堆属性，比如symbol就是member.Value.Symbol。
 
 （update：sample code貌似找不到这个QC什么什么的symbol了。smsb）
 
-然后用这个symbol来定位某支股票，fill in stocks[]数组以及values{} map。这里有一个`self.Securities`。
+然后用这个symbol来定位某支股票，fill in stocks[]数组以及values{} map。这里有一个`self.Securities`，反正就是一堆securities，我也不知道是不是filter过的，反正是一个map， key是symbol，value是一个Security对象。
+
+## 正式warm-up
+
+就把每一天的price放到values{}里面，然后keep track of过去了多少周。
+
+lastday表示上一周的最后一天。
+
+# 主程序
+
+```python
+delta = self.Time.date() - self._LastDay
+if delta.days >= 7:
+    self._LastDay = self.Time.date()
+
+    returns = {}
+    for stock in self._stocks:
+        newPrice = self.Securities[stock].Price
+        oldPrice = self._values[stock].pop(0)
+        self._values[stock].append(newPrice)
+        try:
+            returns[stock] = newPrice/oldPrice
+        except:
+            returns[stock] = 0
+
+    newArr = [(v,k) for k,v in returns.items()]
+    newArr.sort()
+    for ret, stock in newArr[self._numberOfTradings:-self._numberOfTradings]:
+        if self.Portfolio[stock].Invested:
+            self.Liquidate(stock)
+    for ret, stock in newArr[0:self._numberOfTradings]:
+        self.SetHoldings(stock, 0.5/self._numberOfTradings)
+    for ret, stock in newArr[-self._numberOfTradings:]:
+        self.SetHoldings(stock, -0.5/self._numberOfTradings)
+    self._LastDay = self.Time.date()
+```
+
+如果delta.days() >= 7，说明又过去了一周，该rebalance了。对每一个stock：newprice就是今天的price。oldprice就是四周前的price。然后算下return。
+
+sort一下return list，把第11~90名liquidate（平仓）了。
+
+然后根据策略买卖就可以了。setHoldings()的第二个参数应该是 持仓占总资产的比例。
+
+# 结果
+
+![res](/Users/apple/yuhengfdada.github.io/assets/qc/res.png)
+
+# Room for Improvement
+
+一个是universe中最开始的100个large cap股票不一定后面也是。有很多股票不知道为什么non-tradable了。但是这和QC的universe的实现关系很大，不知道后面能不能重新选可以trade的那些股票。
+
+另外就是时间区间可能可以变一下，拿最新数据整。
