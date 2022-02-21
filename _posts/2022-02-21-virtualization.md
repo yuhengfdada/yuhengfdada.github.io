@@ -28,11 +28,11 @@ Modern: Execute the guest code DIRECTLY
 
 如果我们想在Host上直接执行Guest的指令，可能有如下的问题：
 
-![challenges](/Users/apple/yuhengfdada.github.io/assets/vir/challenges.png)
+![challenges](/assets/vir/challenges.png)
 
 ## VMM
 
-![vmm](/Users/apple/yuhengfdada.github.io/assets/vir/vmm.png)
+![vmm](/assets/vir/vmm.png)
 
 VMM是一个Guest OS和Host OS的中间件。大多数之前提到的challenges可以通过VMM介入来解决。
 
@@ -48,9 +48,9 @@ Guest与IO device之间的交互也是通过VMM来完成的。
 
 ## Address Translation
 
-![va](/Users/apple/yuhengfdada.github.io/assets/vir/va.png)
+![va](/assets/vir/va.png)
 
-![shadow](/Users/apple/yuhengfdada.github.io/assets/vir/shadow.png)
+![shadow](/assets/vir/shadow.png)
 
 ## Interrupts and Traps
 
@@ -62,4 +62,4 @@ trap to VMM.
 
 还有一种常用的结构叫Hypervisor，直接跑在hardware上，然后上面跑多个并行的VM。
 
-![hyp](/Users/apple/yuhengfdada.github.io/assets/vir/hyp.png)
+![hyp](/assets/vir/hyp.png)

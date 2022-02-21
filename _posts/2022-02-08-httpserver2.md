@@ -11,9 +11,9 @@ tags:
 
 主要还是理清楚整个流程。理清楚就好写了。
 
-![1](/Users/apple/yuhengfdada.github.io/assets/httpserver2/1.png)
+![1](/assets/httpserver2/1.png)
 
-![2](/Users/apple/yuhengfdada.github.io/assets/httpserver2/2.png)
+![2](/assets/httpserver2/2.png)
 
 今天的知识点：
 

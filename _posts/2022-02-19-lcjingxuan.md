@@ -25,7 +25,7 @@ tags:
 
 找完中点之后就递归。这里可以把mid节点前面的edge切掉，后面的edge也切掉，再分别在左右两个头上递归。like this.
 
-![binary1](/Users/apple/yuhengfdada.github.io/assets/lcjx/binary1.png)
+![binary1](/assets/lcjx/binary1.png)
 
 切后面好做，mid->next保存下来然后让mid->next = nullptr.
 
