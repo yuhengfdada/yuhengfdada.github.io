@@ -1,5 +1,5 @@
 ---
-title: Software Engineering: What is "Just Right"?
+title: Software Engineering - What is "Just Right"?
 categories:
   - Blog
 tags:
